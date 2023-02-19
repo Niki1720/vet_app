@@ -1,5 +1,5 @@
 class Animal < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, optional: true
 
   validates :name, presence: true, length: { minimum: 3}
   validates :species, presence: true

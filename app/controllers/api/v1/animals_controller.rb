@@ -1,11 +1,13 @@
 module Api
   module V1
     class AnimalsController < ApplicationController
+      before_action :set_user
       before_action :set_animal, only: [:show, :update, :destroy]
       # GET api/v1/animals
       def index
-        @animals = Animal.all
-        render json: serializer.new(@animals).serializable_hash.to_json
+        @animals = Animal.all.where(user_id: @user.id)
+        puts @animals.inspect
+        render json: serializer.new(@animals).serializable_hash.to_json, status: 200
       end
 
       # GET api/v1/animals/1
@@ -19,7 +21,7 @@ module Api
         if @animal.valid?
           render json: serializer.new(@animal).serializable_hash.to_json, status: :ok
         else
-          render json: serializer.new(@animal).serializable_hash.to_json, status: :unprocessable_entity
+          render json: ErrorSerializer.new(@animal).serialized_json, status: :unprocessable_entity
         end
       end
 
@@ -29,7 +31,7 @@ module Api
         if @animal.valid?
           render json: serializer.new(@animal).serializable_hash.to_json, status: :ok
         else
-          render json: serializer.new(@animal).serializable_hash.to_json, status: :unprocessable_entity
+          render json: ErrorSerializer.new(@animal).serialized_json, status: :unprocessable_entity
         end
       end
 
@@ -48,6 +50,10 @@ module Api
       # Only allow a list of trusted parameters through.
       def animal_params
         params.permit(:name, :species, :birth, :death)
+      end
+
+      def set_user
+        @user = User.find(params[:user_id])
       end
 
       def serializer

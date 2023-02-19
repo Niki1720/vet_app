@@ -11,7 +11,8 @@ RSpec.describe Api::V1::AnimalsController, type: :request do
 
   describe "GET /show" do
     it "returns a JSON response of a single animal" do
-      animal = FactoryBot.create(:animal, name: 'Fluffy', species: 'Cat')
+      user = FactoryBot.create(:user)
+      animal = FactoryBot.create(:animal, name: 'Fluffy', species: 'Cat', user_id: user.id)
 
       get "/api/v1/animals/#{animal.id}"
 
@@ -40,6 +41,9 @@ RSpec.describe Api::V1::AnimalsController, type: :request do
         post '/api/v1/animals', params: { name: '', species: 'Dog' }
 
         expect(response).to have_http_status(:unprocessable_entity)
+
+        json = JSON.parse(response.body)
+        expect(json['error']).to eq('Invalid parameters')
       end
     end
   end
@@ -66,6 +70,9 @@ RSpec.describe Api::V1::AnimalsController, type: :request do
         patch "/api/v1/animals/#{animal.id}", params: { name: '', species: 'Dog' }
 
         expect(response).to have_http_status(:unprocessable_entity)
+
+        json = JSON.parse(response.body)
+        expect(json['error']).to eq('Invalid parameters')
       end
     end
   end
@@ -79,4 +86,3 @@ RSpec.describe Api::V1::AnimalsController, type: :request do
     end
   end
 end
-
