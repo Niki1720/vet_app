@@ -7,12 +7,12 @@ module Api
       def index
         @animals = Animal.all.where(user_id: @user.id)
         puts @animals.inspect
-        render json: serializer.new(@animals).serializable_hash.to_json, status: 200
+        render json: serializer.new(@animals).serializable_hash.to_json, status: :ok
       end
 
       # GET api/v1/animals/1
       def show
-        render json: serializer.new(@animal).serializable_hash.to_json
+        render json: serializer.new(@animal).serializable_hash.to_json, status: :ok
       end
 
       # POST api/v1/animals
