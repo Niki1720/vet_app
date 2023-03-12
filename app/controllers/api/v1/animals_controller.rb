@@ -1,6 +1,7 @@
 module Api
   module V1
     class AnimalsController < ApplicationController
+      before_action :authenticate_request
       before_action :set_user
       before_action :set_animal, only: [:show, :update, :destroy]
       # GET api/v1/animals
